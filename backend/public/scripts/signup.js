@@ -7,14 +7,6 @@ const eyeBtn = document.getElementById("show-password");
 const infoDiv = document.querySelector(".info-container");
 const infoSpan = document.getElementById("info-msg");
 
-const MyModel = mongoose.model('Users', new Schema({
-    id: Number, userName: String, password: String, credit: Number
-    })
-);
-
-
-const doc = new MyModel();
-
 function showInfo(info) {
     infoSpan.innerHTML = info;
     infoDiv.classList.remove("hide");

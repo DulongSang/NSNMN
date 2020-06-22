@@ -10,7 +10,7 @@ const app = express();
 
 // connect to remote MongoDB
 mongoose.connect(config.db.url,
-    { useUnifiedTopology: true, useNewUrlParser: true }, 
+    { useUnifiedTopology: true, useNewUrlParser: true },
     () => console.log("Connected to db!") );
 
 // Body parser middleware

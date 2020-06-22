@@ -30,7 +30,7 @@ router.post("/register", async (req, res) => {
 
     // user used User model
     const user = new User({
-        _id: mongoose.Types.ObjectId(),
+        _id: new mongoose.Types.ObjectId(),
         username: newUser.username,
         name: newUser.username,
         password: newUser.password
@@ -49,6 +49,21 @@ router.post("/register", async (req, res) => {
     } catch(err) {
         res.status(201).send(err);
     }
+});
+
+router.get("/:userId",(req,res,next) =>{
+    const id = req.params._id;
+    User.findById(id)
+        .exec()
+        .then(doc => {
+            console.log("from database: " + doc);
+            res.status(200).json(doc);
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({error: err});
+
+        });
 });
 
 

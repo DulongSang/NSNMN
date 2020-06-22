@@ -5,8 +5,6 @@ const mongoose = require("mongoose");
 
 const userRouter = require("./routers/user");
 const config = require("./config");
-
-
 const app = express();
 
 

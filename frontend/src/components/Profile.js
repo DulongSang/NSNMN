@@ -12,7 +12,7 @@ class Profile extends Component {
     render() {
         return (
             <div className="flex">
-                <img src={profile} className="profile"></img>
+                <img src={profile} className="profile" alt="profile"></img>
                 <div>
                     <span>TestUser</span><br />
                     <span>TestLevel</span>

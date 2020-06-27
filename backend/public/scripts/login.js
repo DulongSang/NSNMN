@@ -38,9 +38,9 @@ document.getElementById("submit").addEventListener("click", (e) => {
     const remember = rememberField.checked;
 
     // send a http post request to the server
-    const newUser = { username, password, remember };
+    const loginInfo = { username, password, remember };
     const http = new XMLHttpRequest();
-    const url = hostUrl + "/api/user/login";
+    const url = hostUrl + "/api/user/auth";
     http.open("POST", url, true);
     http.setRequestHeader("Content-Type", "application/json");
 
@@ -51,11 +51,15 @@ document.getElementById("submit").addEventListener("click", (e) => {
         }
 
         if (http.status === 200) {
-            showInfo("success");
-            console.log(http.responseText);
+            const response = JSON.parse(http.responseText);
+            if (remember) {
+                localStorage.setItem("id_token", response.token);
+            } else {
+                sessionStorage.setItem("id_token", response.token);
+            }
         } else {
             showInfo(http.responseText);
         }
     };
-    http.send(JSON.stringify(newUser));
+    http.send(JSON.stringify(loginInfo));
 });

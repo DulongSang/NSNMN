@@ -1,0 +1,8 @@
+socket send:
+    message
+    join
+
+io send:
+    message
+    userAction
+    systemMsg

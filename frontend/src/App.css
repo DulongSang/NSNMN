@@ -87,3 +87,16 @@ div.send-btn {
 div.send-btn:hover {
     background-color: #2765e0;
 }
+
+div.msg-user-action {
+    text-align: center;
+    margin: 16px 0;
+}
+
+div.msg-user-action span {
+    background-color: #b1b1b1;
+    font-size: 16px;
+    color: #fff;
+    padding: 6px;
+    border-radius: 6px;
+}

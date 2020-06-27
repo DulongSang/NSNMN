@@ -22,6 +22,10 @@ const UserSchema = new mongoose.Schema({
     credit: {
         type: Number,
         default: 0
+    },
+    avatar: {
+        type: String,
+        default: ""
     }
 });
 
@@ -73,7 +77,6 @@ async function getUserByUsername(username) {
         const docs = await User.findOne({ username: username });
         return { docs };
     } catch (err) {
-        console.log(err);
         return { err };
     }
 }

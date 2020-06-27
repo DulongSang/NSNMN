@@ -10,7 +10,6 @@ export default class Chat extends Component {
         super(props);
         this.state = { msgs: [] }; 
         this.socket = null;
-        //this.setupIO();
     }
 
     componentDidMount() {
@@ -18,7 +17,8 @@ export default class Chat extends Component {
         this.socket = io(url);
 
         // emit join message to server
-        this.socket.emit("join", "mastertime");
+        const username = "mastertime";  // to be replaced
+        this.socket.emit("join", username);
 
         this.socket.on("message", msg => {
             this.setState(prevState => ({ msgs: [...prevState.msgs, msg] }));

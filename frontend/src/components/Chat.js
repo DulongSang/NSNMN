@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import io from "socket.io-client";
 
 import Message from "./Message";
+import InputArea from "./InputArea";
 
 export default class Chat extends Component {
     constructor(props) {
@@ -24,21 +25,23 @@ export default class Chat extends Component {
 
                 return { msgs };
             });
-            console.log(this.state.msgs);
         });
     }
     
     render() {
         return (
             <div>
-                <ul className="chat">
-                    {this.state.msgs.map(msg => (
-                        <li key="123">
-                            <Message role={msg.role} username={msg.username}
-                                time={msg.time} text={msg.text} />
-                        </li>)
-                    )}
-                </ul>
+                <div style={{height: "75vh"}}>
+                    <ul className="chat">
+                        {this.state.msgs.map(msg => (
+                            <li key={msg.id}>
+                                <Message role={msg.role} username={msg.username}
+                                    time={msg.time} text={msg.text} />
+                            </li>)
+                        )}
+                    </ul>
+                </div>
+                <InputArea socket={this.socket}/>
             </div>
         );
     }

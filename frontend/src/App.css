@@ -24,6 +24,10 @@ img.profile {
 
 ul.sidebar li {
     list-style: none;
+    padding: 6px;
+}
+
+ul.chat {
     padding: 10px;
 }
 
@@ -61,4 +65,25 @@ p.msg-text {
     max-width: 40vw;
     margin: 0;
     font-size: 18px;
+}
+
+textarea {
+    resize: none !important;
+    border-radius: 6px 0 0 6px;
+    font-size: 15px;
+}
+
+div.send-btn {
+    padding: 20px;
+    background-color: #4c8cf5;
+    font-size: 20px;
+    color: white;
+    border-radius: 0 6px 6px 0;
+    transition: 0.3s;
+    position: sticky;
+    top: 0;
+}
+
+div.send-btn:hover {
+    background-color: #2765e0;
 }

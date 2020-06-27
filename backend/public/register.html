@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create your NSNMN Account</title>
+  <link rel="stylesheet" href="styles/register.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-2/css/all.min.css">
+  <link rel="icon" href="favicon.ico" type="image/ico">
+</head>
+<body>
+  <div class="container">
+    <form class="login-form">
+      <img src="images/unicorn.png" alt="unicorn" width="60px" height="60px">
+      <h1>Create your NSNMN Account</h1>
+
+      <div class="hint">You can only use letters & numbers</div>
+      <div class="textb">
+        <input type="text" name="username" id="username" autocomplete="off" spellcheck="false" required>
+        <div class="placeholder">Username</div>
+      </div>
+      
+      <div class="hint">Use 6 or more characters</div>
+      <div class="textb">
+        <input type="password" name="password" id="password" required>
+        <div class="placeholder">Password</div>
+        <div class="show-password fas fa-eye-slash" id="show-password"></div>
+      </div>
+      
+      <div class="textb">
+        <input type="password" name="confirm-password" id="confirm-password" required>
+        <div class="placeholder">Confirm Password</div>
+      </div>
+
+      <div class="info-container hide">
+        <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+        <span id="info-msg"></span>
+      </div>
+      <input class="btn" type="submit" value="Sign Up" id="submit">
+      <div style="margin-top: 20px">
+        <span>Already have an account?</span><a href="login.html">Sign in</a>
+      </div>
+    </form>
+  </div>
+
+  <script src="./scripts/register.js"></script>
+</body>
+</html>

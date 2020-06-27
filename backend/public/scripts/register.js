@@ -33,12 +33,12 @@ eyeBtn.addEventListener("click", () => {
 });
 
 
-// validate username and password
+// submit the form to the server
 document.getElementById("submit").addEventListener("click", (e) => {
     e.preventDefault();
-    let username = usernameField.value;
-    let password = passwordField.value;
-    let confirm = confirmField.value;
+    const username = usernameField.value;
+    const password = passwordField.value;
+    const confirm = confirmField.value;
 
     // send a http post request to the server
     const newUser = { username, password, confirm };

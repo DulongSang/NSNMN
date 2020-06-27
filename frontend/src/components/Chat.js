@@ -9,9 +9,10 @@ export default class Chat extends Component {
         super(props);
         this.state = { msgs: [] }; 
         this.socket = null;
+        this.setupIO();
     }
 
-    componentDidMount() {
+    setupIO() {
         const url = "localhost:5000";
         this.socket = io(url);
 
@@ -19,19 +20,21 @@ export default class Chat extends Component {
         this.socket.emit("join", "Hello");
 
         this.socket.on("message", msg => {
-            this.setState(prevState => {
-                const msgs = prevState.msgs;
-                msgs.push(msg);
-
-                return { msgs };
-            });
+            this.setState(prevState => ({ msgs: [...prevState.msgs, msg] }));
+            this.scrollToBottom();  // auto scroll to bottom
         });
+    }
+
+    scrollToBottom = () => {
+        // To be optimized
+        const chatMessages = document.getElementById("messages");
+        chatMessages.scrollTop = chatMessages.scrollHeight;
     }
     
     render() {
         return (
             <div>
-                <div style={{height: "75vh"}}>
+                <div style={{height: "75vh", overflow: "auto"}} id="messages">
                     <ul className="chat">
                         {this.state.msgs.map(msg => (
                             <li key={msg.id}>

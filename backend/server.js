@@ -7,7 +7,7 @@ const cors = require("cors");
 
 const userRouter = require("./routers/user");
 const config = require("./config");
-const setEvent = require("./sockethandler");
+const setEvent = require("./utils/sockethandler");
 
 const app = express();
 const server = http.createServer(app);
@@ -15,14 +15,11 @@ const io = require("socket.io")(server);
 
 
 // all access from any domain [temp]
-const whitelist = ['http://localhost:3000'];
 const corsOptions = {
   credentials: true, // This is important.
   origin: (origin, callback) => {
-    if(whitelist.includes(origin))
-      return callback(null, true)
+    return callback(null, true)
 
-      callback(new Error('Not allowed by CORS'));
   }
 }
 
@@ -44,6 +41,6 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/api/user", userRouter);
 
-app.get("/r", (req, res) => res.sendFile(path.join(__dirname, "public", "signup.html")));
+app.get("/r", (req, res) => res.sendFile(path.join(__dirname, "public", "register.html")));
 
 server.listen(config.main.PORT, () => console.log(`Server is running on port ${config.main.PORT}`));

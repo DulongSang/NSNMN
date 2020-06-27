@@ -1,6 +1,6 @@
 {
     "db": {
-        "url": "mongodb+srv://master:123695@nsnmndb-piihv.mongodb.net/<dbname>?retryWrites=true&w=majority"
+        "url": "mongodb+srv://master:123695@nsnmndb-piihv.mongodb.net/nsnmn?retryWrites=true&w=majority"
     },
     "main": {
         "url": "http://mastertime.ddns.net",

@@ -1,69 +1,44 @@
 const router = require("express").Router();
-const bcrypt = require("bcryptjs");
-const mongoose = require('mongoose');
 
 const { validateUser } = require("../utils/validation");
 const User = require("../model/User");
 
-
-async function hashPassword(plaintext) {
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(plaintext, salt);
-    return hashedPassword;
-}
-
 router.post("/register", async (req, res) => {
     // user info data passed from client
-    const newUser = {
+    const userInfo = {
         username: req.body.username,
         password: req.body.password,
         confirm: req.body.confirm
     };
 
     // invalid username / password
-    const err = validateUser(newUser);
+    const err = validateUser(userInfo);
     if (err) {
         return res.status(201).send(err);
     }
 
-    newUser.password = await hashPassword(newUser.password);
+    const user = await User.createUser(userInfo);
 
-    // user used User model
-    const user = new User({
-        _id: new mongoose.Types.ObjectId(),
-        username: newUser.username,
-        name: newUser.username,
-        password: newUser.password
-    });
-
-    // try to save to new user to db
-    try {
-        // newUser.save().then(result => {
-        //     console.log(result);
-        // })
-        //     .catch(err => console.log(err));
-
-        const savedUser = await user.save();
-        res.status(200).send(savedUser);
-
-    } catch(err) {
-        res.status(201).send(err);
+    if (user.err) {
+        console.log(user.err);
+        res.status(201).send(user.err);
+    } else {
+        res.status(200).send(user.docs)
     }
 });
 
-router.get("/:userId",(req,res,next) =>{
-    const id = req.params._id;
-    User.findById(id)
-        .exec()
-        .then(doc => {
-            console.log("from database: " + doc);
-            res.status(200).json(doc);
-        })
-        .catch(err => {
-            console.log(err);
-            res.status(500).json({error: err});
-
-        });
+// temp api
+router.get("/:username", async (req, res) =>{
+    const user = await User.getUserByUsername(req.params.username);
+    if (user.err) {
+        console.log(err);
+        res.status(400).send(user.err);
+    } else {
+        if (user.docs === null) {
+            return res.status(400).send("user not found");
+        }
+        res.status(200).send(user.docs);
+    }
 });
 
 

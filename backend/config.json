@@ -5,5 +5,8 @@
     "main": {
         "url": "http://mastertime.ddns.net",
         "PORT": 5000
+    },
+    "auth": {
+        "secret": "wtf"
     }
 }

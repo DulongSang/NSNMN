@@ -1,7 +1,9 @@
 const router = require("express").Router();
+const jwt = require("jsonwebtoken");
 
 const { validateUser } = require("../utils/validation");
 const User = require("../model/User");
+const config = require("../config.json");
 
 router.post("/register", async (req, res) => {
     // user info data passed from client
@@ -25,6 +27,22 @@ router.post("/register", async (req, res) => {
     } else {
         res.status(200).send(user.docs)
     }
+});
+
+router.post("/auth", async (req, res) => {
+    const username = req.body.username;
+    const password = req.body.password;
+
+    const validate = await User.validatePassword(username, password);
+    if (validate.err) {
+        return res.status(500).send(validate.err);
+    }
+    if (validate.result) {  // correct password
+        const token = jwt.sign({ data: username }, config.auth.secret, 
+            { expiresIn: 604800 });
+        return res.status(200).json({ token: `Bearer ${token}` });
+    }
+    return res.status(400).send("Incorrect username/password");
 });
 
 // temp api

@@ -78,10 +78,23 @@ async function getUserByUsername(username) {
     }
 }
 
+async function validatePassword(username, password) {
+    const user = await getUserByUsername(username);
+    if (user.err) {
+        return { err: user.err };
+    }
+    if (user.docs === null) {
+        return { result: false };
+    }
+    const result = await bcrypt.compare(password, user.docs.password);
+    return { result };
+}
+
 module.exports = {
     User,
     createUser,
     getUserById,
-    getUserByUsername
+    getUserByUsername,
+    validatePassword
 };
 

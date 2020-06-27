@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const http = require("http");
 const cors = require("cors");
+const passport = require("passport");
 
 const userRouter = require("./routers/user");
 const config = require("./config");
@@ -12,6 +13,9 @@ const setEvent = require("./utils/sockethandler");
 const app = express();
 const server = http.createServer(app);
 const io = require("socket.io")(server);
+
+// set io event
+setEvent(io);
 
 
 // all access from any domain [temp]
@@ -25,10 +29,6 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-
-// set io event
-setEvent(io);
-
 // connect to remote MongoDB
 mongoose.connect(config.db.url,
     { useUnifiedTopology: true, useNewUrlParser: true },
@@ -36,6 +36,12 @@ mongoose.connect(config.db.url,
 
 // Body parser middleware
 app.use(bodyParser.json());
+
+// passport middlewares
+app.use(passport.initialize());
+app.use(passport.session());
+
+require("./utils/passport")(passport);
 
 app.use(express.static(path.join(__dirname, "public")));
 

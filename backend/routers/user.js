@@ -1,9 +1,8 @@
 const router = require("express").Router();
-const jwt = require("jsonwebtoken");
 
 const { validateUser } = require("../utils/validation");
 const User = require("../model/User");
-const config = require("../config.json");
+const { generateToken, verifyToken } = require("../utils/jwtUtils");
 
 router.post("/register", async (req, res) => {
     // user info data passed from client
@@ -30,6 +29,15 @@ router.post("/register", async (req, res) => {
 });
 
 router.post("/auth", async (req, res) => {
+    const token = req.get("Authorization"); // get Authorization header
+    if (token) {    // if token was sent by the client
+        const verification = verifyToken(token);
+        if (verification.err) { // validation error
+            return res.status(401).json(verification.err);
+        }
+        return res.status(200).json({ token, username: verification.username });
+    }
+
     const username = req.body.username;
     const password = req.body.password;
 
@@ -38,11 +46,10 @@ router.post("/auth", async (req, res) => {
         return res.status(500).send(validate.err);
     }
     if (validate.result) {  // correct password
-        const token = jwt.sign({ data: username }, config.auth.secret, 
-            { expiresIn: 604800 });
-        return res.status(200).json({ token: `Bearer ${token}` });
+        const token = generateToken(username);
+        return res.status(200).json({ token, username });
     }
-    return res.status(400).send("Incorrect username/password");
+    return res.status(401).send("Incorrect username/password");
 });
 
 // temp api

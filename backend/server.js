@@ -4,7 +4,6 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const http = require("http");
 const cors = require("cors");
-const passport = require("passport");
 
 const userRouter = require("./routers/user");
 const config = require("./config");
@@ -32,16 +31,10 @@ app.use(cors(corsOptions));
 // connect to remote MongoDB
 mongoose.connect(config.db.url,
     { useUnifiedTopology: true, useNewUrlParser: true },
-    () => console.log("Connected to db!") );
+    () => console.log("\x1b[32mConnected to db!\x1b[0m") );
 
 // Body parser middleware
 app.use(bodyParser.json());
-
-// passport middlewares
-app.use(passport.initialize());
-app.use(passport.session());
-
-require("./utils/passport")(passport);
 
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -49,4 +42,4 @@ app.use("/api/user", userRouter);
 
 app.get("/r", (req, res) => res.sendFile(path.join(__dirname, "public", "register.html")));
 
-server.listen(config.main.PORT, () => console.log(`Server is running on port ${config.main.PORT}`));
+server.listen(config.main.PORT, () => console.log(`Server is running on port \x1b[36m${config.main.PORT}\x1b[0m`));

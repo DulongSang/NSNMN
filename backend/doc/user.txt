@@ -1,0 +1,40 @@
+User documentation
+endpoint: /api/user
+
+Requests:
+
+* Authentication
+POST /api/user/auth
+request: { username, password, remember}
+responses: [
+    {
+        status: 200,
+        contentType: json
+        content: {
+            token
+        }
+    },
+    {
+        status: 401,
+        contentType: plain text
+        content: "Incorrect username/password"
+    }
+]
+
+* Register
+POST /api/user/register
+request: { username, password, confirm }
+responses: [
+    {
+        status: 200,
+        contentType: json
+        content: {
+            // to be added
+        }
+    },
+    {
+        status: 400,
+        contentType: plain text
+        content: error info
+    }
+]

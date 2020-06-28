@@ -10,7 +10,7 @@ export default class Login extends Component {
       showPwd: false,
       username: "",
       password: "",
-      remember: true,
+      confirm: "",
       errorInfo: null
     };
 
@@ -24,12 +24,7 @@ export default class Login extends Component {
   }
 
   handleChange(event) {
-    const name = event.target.name;
-    if (name === "remember") {
-      this.setState({ [name]: event.target.checked });
-    } else {
-      this.setState({ [name]: event.target.value });
-    }
+    this.setState({ [event.target.name]: event.target.value });
   }
 
   handleSubmit(event) {
@@ -37,11 +32,11 @@ export default class Login extends Component {
     const loginInfo = { 
       username: this.state.username,
       password: this.state.password,
-      remember: this.state.remember
+      confirm: this.state.confirm
     };
 
     const http = new XMLHttpRequest();
-    const url = config.hostOrigin + "/api/user/auth";
+    const url = config.hostOrigin + "/api/user/register";
     http.open("POST", url, true);
     http.setRequestHeader("Content-Type", "application/json");
 
@@ -85,18 +80,19 @@ export default class Login extends Component {
             </div>
           </div>
 
+          <div className="textb">
+            <input type={this.state.showPwd ? "text" : "password"} name="confirm" 
+              value={this.state.confirm} onChange={this.handleChange} required/>
+            <div className="placeholder">Confirm</div>
+          </div>
+
           <div className={`info-container ${this.state.errorInfo ? "": "hide"}`}>
             <ExclamationCircleFill style={{marginRight: "6px", bottom: "0.1em", position: "relative"}} />
             <span id="info-msg">{this.state.errorInfo}</span>
           </div>
-          <input className="login-btn" type="submit" value="Login" onClick={this.handleSubmit} />
-          <div className="checkbox">
-            <input type="checkbox" name="remember" 
-              checked={this.state.remember} onChange={this.handleChange} />
-            Remember me
-          </div>
+          <input className="login-btn" type="submit" value="Sign up" onClick={this.handleSubmit} />
           <div style={{marginTop: "20px"}}>
-            <span>Don't have an account?</span><a href="/register">Create one</a>
+            <span>Already have an account?</span><a href="/login">Sign in</a>
           </div>
         </form>
       </div>

@@ -93,11 +93,21 @@ async function validatePassword(username, password) {
     return { result };
 }
 
+async function updateByUsername(username, updateInfo) {
+    try{
+        const docs = await User.updateOne({ username }, updateInfo);
+        return { docs };
+    } catch(err) {
+        return { err };
+    }
+}
+
 module.exports = {
     User,
     createUser,
     getUserById,
     getUserByUsername,
-    validatePassword
+    validatePassword,
+    updateByUsername
 };
 

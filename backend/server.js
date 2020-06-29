@@ -6,6 +6,7 @@ const http = require("http");
 const cors = require("cors");
 
 const userRouter = require("./routers/user");
+const uploadRouter = require("./routers/upload");
 const config = require("./config");
 const setEvent = require("./utils/sockethandler");
 
@@ -39,7 +40,6 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/api/user", userRouter);
+app.use("/api/upload", uploadRouter);
 
-app.get("/r", (req, res) => res.sendFile(path.join(__dirname, "public", "register.html")));
-
-server.listen(config.main.PORT, () => console.log(`Server is running on port \x1b[36m${config.main.PORT}\x1b[0m`));
+server.listen(config.main.PORT, () => console.log(`Server running on port \x1b[36m${config.main.PORT}\x1b[0m`));

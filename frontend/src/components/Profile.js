@@ -1,5 +1,5 @@
 import React from 'react';
-import { CaretDown } from "react-bootstrap-icons";
+import { CaretDown, BoxArrowInRight } from "react-bootstrap-icons";
 
 import avatar from "../images/kirino.jpg";
 
@@ -17,7 +17,10 @@ function Profile() {
             <CaretDown style={{margin: "15px 10px", fontSize: "20px"}} />
             <div className="dropdown-content">
                 <div><a>Profile</a></div>
-                <div><a onClick={logout}>Log out</a></div>
+                <div>
+                    <a onClick={logout}>Log out</a>
+                    <BoxArrowInRight style={{marginLeft: "10px"}}/>
+                </div>
             </div>
         </div>
     );

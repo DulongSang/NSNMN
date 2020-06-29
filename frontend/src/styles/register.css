@@ -112,9 +112,9 @@ div.checkbox input {
     cursor: pointer;
 }
 
-a {
+form.login-form div a {
     margin-left: 10px;
     text-decoration: none;
     color: #257fe6;
-    transition: 0.5s;
+    transition-duration: 0.5s;
 }

@@ -29,7 +29,8 @@ responses: [
         status: 200,
         contentType: json
         content: {
-            // to be added
+            token,
+            username
         }
     },
     {

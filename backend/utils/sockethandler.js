@@ -1,5 +1,6 @@
 const moment = require("moment");
 const User = require("../model/User");
+const { verifyToken } = require("./jwtUtils");
 
 let msgId = 0;
 
@@ -7,8 +8,15 @@ function setEvent(io) {
     io.on("connection", socket => {
         let username, name;
 
-        socket.on("join", async _username => {
-            username = _username;
+        socket.on("join", async token => {
+            const verification = verifyToken(token);
+            if (verification.err) {
+                socket.emit("auth", "Invalid token");
+                return socket.disconnect();
+            }
+            socket.emit("auth", "success");
+            username = verification.username;
+
             const user = await User.getUserByUsername(username);
             if (user.err) {
                 return socket.emit("systemMsg", user.err);

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Redirect } from "react-router-dom";
 import { EyeSlash, Eye, ExclamationCircleFill } from "react-bootstrap-icons";
 import logo from "../images/unicorn.png";
 import config from "../config.json";
@@ -11,12 +12,39 @@ export default class Login extends Component {
       username: "",
       password: "",
       remember: true,
-      errorInfo: null
+      errorInfo: null,
+      redirect: false
     };
 
     this.showHidePassword = this.showHidePassword.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  // auto login if token exists and is valid
+  componentDidMount() {
+    const token = localStorage.getItem("token");
+    if (token === null) return;
+
+    const http = new XMLHttpRequest();
+    const url = config.hostOrigin + "/api/user/auth";
+    http.open("POST", url, true);
+    http.setRequestHeader("Authorization", token);
+
+    http.onreadystatechange = () => {
+      // state 4: done
+      if (http.readyState !== 4) {
+        return;
+      }
+
+      // !TODO: handle response and redirect
+      if (http.status === 200) {
+        this.setState({ redirect: true });  // redirect
+      } else {
+        console.log(http.responseText);
+      }
+    };
+    http.send();
   }
 
   showHidePassword() {
@@ -53,7 +81,10 @@ export default class Login extends Component {
 
       // !TODO: handle response and redirect
       if (http.status === 200) {
-        const response = JSON.parse(http.responseText);
+        const { token, username } = JSON.parse(http.responseText);
+        localStorage.setItem("token", token);
+        localStorage.setItem("username", username);
+        this.setState({ redirect: true });  // redirect
       } else {
         this.setState({ errorInfo: http.responseText });
       }
@@ -62,6 +93,10 @@ export default class Login extends Component {
   }
 
   render() {
+    if (this.state.redirect) {
+      return <Redirect to="/app/chat" />; // redirect to chat page
+    }
+
     return (
       <div className="login-container">
         <form className="login-form">

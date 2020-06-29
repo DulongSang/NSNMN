@@ -22,10 +22,11 @@ router.post("/register", async (req, res) => {
 
     if (user.err) {
         console.log(user.err);
-        res.status(201).send(user.err);
-    } else {
-        res.status(200).send(user.docs)
+        return res.status(201).send(user.err);
     }
+
+    const token = generateToken(username, "1d");
+    return res.status(200).json({ token, username });
 });
 
 router.post("/auth", async (req, res) => {

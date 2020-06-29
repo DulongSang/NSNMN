@@ -17,12 +17,12 @@ function Navbar() {
           <div className="collapse navbar-collapse">
             <ul className="navbar-nav mr-auto">
               <li>
-                <NavLink className="nav-link" activeClassName="active" to="/dashboard">
+                <NavLink className="nav-link" activeClassName="active" to="/app/dashboard">
                   Dashboard
                 </NavLink>
               </li>
               <li>
-                <NavLink className="nav-link" activeClassName="active" to="/chat">
+                <NavLink className="nav-link" activeClassName="active" to="/app/chat">
                   Chat
                 </NavLink>
               </li>

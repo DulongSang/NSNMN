@@ -21,7 +21,7 @@ function App() {
           <div className="flex" style={{height: "90vh"}}>
             <Sidebar />
             <div className="main-container">
-              <Route exact path="/chat" component={Chat}/>
+              <Route exact path="/app/chat" component={Chat}/>
             </div>
           </div>
         </div>

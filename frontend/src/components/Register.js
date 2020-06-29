@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+import { Redirect } from "react-router-dom";
 import { EyeSlash, Eye, ExclamationCircleFill } from "react-bootstrap-icons";
 import logo from "../images/unicorn.png";
 import config from "../config.json";
+
 
 export default class Login extends Component {
   constructor(props) {
@@ -11,7 +13,8 @@ export default class Login extends Component {
       username: "",
       password: "",
       confirm: "",
-      errorInfo: null
+      errorInfo: null,
+      redirect: false
     };
 
     this.showHidePassword = this.showHidePassword.bind(this);
@@ -48,7 +51,10 @@ export default class Login extends Component {
 
       // !TODO: handle response and redirect
       if (http.status === 200) {
-        const response = JSON.parse(http.responseText);
+        const { token, username } = JSON.parse(http.responseText);
+        localStorage.setItem("token", token);
+        localStorage.setItem("username", username);
+        this.setState({ redirect: true });  // redirect
       } else {
         this.setState({ errorInfo: http.responseText });
       }
@@ -57,18 +63,25 @@ export default class Login extends Component {
   }
 
   render() {
+    if (this.state.redirect) {
+      return <Redirect to="/app/chat" />; // redirect to chat page
+    }
+
     return (
       <div className="login-container">
         <form className="login-form">
           <img src={logo} alt="unicorn" width="60px" height="60px" />
           <h1>NSNMN Login</h1>
 
+          <div className="hint">You can only use letters & numbers</div>
+          <div className="hint">Use 6 or more characters</div>
           <div className="textb">
             <input type="text" name="username" autoComplete="off" spellCheck="false"
               value={this.state.username} onChange={this.handleChange} required />
             <div className="placeholder">Username</div>
           </div>
           
+          <div className="hint">Use 6 or more characters</div>
           <div className="textb">
             <input type={this.state.showPwd ? "text" : "password"} name="password" 
               value={this.state.password} onChange={this.handleChange} required/>

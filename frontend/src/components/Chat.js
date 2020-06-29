@@ -4,6 +4,7 @@ import io from "socket.io-client";
 import Message from "./Message";
 import InputArea from "./InputArea";
 import UserActionMsg from "./UserActionMsg";
+import config from "../config.json";
 
 export default class Chat extends Component {
     constructor(props) {
@@ -13,16 +14,25 @@ export default class Chat extends Component {
     }
 
     componentDidMount() {
-        const url = "localhost:5000";
-        this.socket = io(url);
+        this.socket = io(config.hostOrigin);
 
         // emit join message to server
-        const username = "mastertime";  // to be replaced
-        this.socket.emit("join", username);
+        const token = localStorage.getItem("token");
+        if (token === null) {
+            // !TODO: handle when token is null
+        }
+
+        this.socket.emit("join", token);
 
         this.socket.on("message", msg => {
             this.setState(prevState => ({ msgs: [...prevState.msgs, msg] }));
             this.scrollToBottom();  // auto scroll to bottom
+        });
+
+        this.socket.on("auth", msg => {
+            if(msg !== "success") {
+                // !TODO: handle token validation error
+            }
         });
     }
 

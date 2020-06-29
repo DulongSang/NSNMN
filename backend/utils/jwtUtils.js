@@ -1,9 +1,9 @@
 const jwt = require("jsonwebtoken");
 const config = require("../config.json");
 
-function generateToken(username) {
+function generateToken(username, expiresIn="7d") {
     const token = jwt.sign({ username }, config.auth.secret,
-        { expiresIn: "7d" });   // token expires after 7 days
+        { expiresIn });   // default: token expires after 7 days
     return token;
 }
 

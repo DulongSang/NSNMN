@@ -54,6 +54,18 @@ router.post("/auth", async (req, res) => {
     return res.status(401).send("Incorrect username/password");
 });
 
+router.get("/avatar/:username", async (req, res) => {
+    const user = await User.getUserByUsername(req.params.username);
+    if (user.err) {
+        return res.status(500).send(user.err);
+    } else {
+        if (user.docs === null) {
+            return res.status(400).send("user not found");
+        }
+    }
+    res.status(200).send(user.docs.avatar);
+});
+
 // temp api
 router.get("/:username", async (req, res) =>{
     const user = await User.getUserByUsername(req.params.username);

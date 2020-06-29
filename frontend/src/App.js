@@ -11,6 +11,7 @@ import Chat from "./components/Chat";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import MainPage from "./components/MainPage";
+import ProfilePage from "./components/ProfilePage";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
             <Sidebar />
             <div className="main-container">
               <Route exact path="/app/chat" component={Chat}/>
+              <Route exact path="/app/profile" component={ProfilePage} />
             </div>
           </div>
         </div>

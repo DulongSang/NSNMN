@@ -49,7 +49,6 @@ export default class Login extends Component {
         return;
       }
 
-      // !TODO: handle response and redirect
       if (http.status === 200) {
         const { token, username } = JSON.parse(http.responseText);
         localStorage.setItem("token", token);

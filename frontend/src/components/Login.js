@@ -37,7 +37,6 @@ export default class Login extends Component {
         return;
       }
 
-      // !TODO: handle response and redirect
       if (http.status === 200) {
         this.setState({ redirect: true });  // redirect
       } else {

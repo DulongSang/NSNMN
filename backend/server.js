@@ -37,7 +37,7 @@ mongoose.connect(config.db.url,
 // Body parser middleware
 app.use(bodyParser.json());
 
-app.use(express.static(path.join(__dirname, "public")));
+app.use("/src", express.static(path.join(__dirname, "public")));
 
 app.use("/api/user", userRouter);
 app.use("/api/upload", uploadRouter);

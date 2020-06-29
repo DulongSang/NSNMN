@@ -55,15 +55,11 @@ router.post("/auth", async (req, res) => {
 });
 
 router.get("/avatar/:username", async (req, res) => {
-    const user = await User.getUserByUsername(req.params.username);
-    if (user.err) {
-        return res.status(500).send(user.err);
-    } else {
-        if (user.docs === null) {
-            return res.status(400).send("user not found");
-        }
+    const { avatar, err } = await User.getAvatarByUsername(req.params.username);
+    if (err) {
+        return res.status(400).send(err);
     }
-    res.status(200).send(user.docs.avatar);
+    res.status(200).send(avatar);
 });
 
 // temp api

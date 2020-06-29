@@ -102,11 +102,23 @@ async function updateByUsername(username, updateInfo) {
     }
 }
 
+async function getAvatarByUsername(username) {
+    const user = await User.getUserByUsername(username);
+    if (user.err) {
+        return { err: user.err };
+    }
+    if (user.docs === null) {
+        return { err: "User not found" };
+    }
+    return { avatar: user.docs.avatar };
+}
+
 module.exports = {
     User,
     createUser,
     getUserById,
     getUserByUsername,
+    getAvatarByUsername,
     validatePassword,
     updateByUsername
 };

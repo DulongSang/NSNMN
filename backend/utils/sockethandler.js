@@ -6,7 +6,7 @@ let msgId = 0;
 
 function setEvent(io) {
     io.on("connection", socket => {
-        let username, name;
+        let username, name, avatar;
 
         socket.on("join", async token => {
             const verification = verifyToken(token);
@@ -25,6 +25,7 @@ function setEvent(io) {
                 return socket.emit("systemMsg", "username not found");
             }
             name = user.docs.name;
+            avatar = user.docs.avatar;
 
             io.emit("message", {
                 id: msgId++,
@@ -45,6 +46,7 @@ function setEvent(io) {
                 type: "text",
                 name: name,
                 role: "member",
+                avatar: avatar,
                 time: moment().format("MM-DD HH:mm"),
                 text: msgText
             });

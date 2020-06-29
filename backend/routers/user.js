@@ -25,6 +25,7 @@ router.post("/register", async (req, res) => {
         return res.status(201).send(user.err);
     }
 
+    const username = userInfo.username;
     const token = generateToken(username, "1d");
     return res.status(200).json({ token, username });
 });

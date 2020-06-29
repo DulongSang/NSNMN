@@ -74,7 +74,6 @@ export default class Login extends Component {
           <h1>NSNMN Login</h1>
 
           <div className="hint">You can only use letters & numbers</div>
-          <div className="hint">Use 6 or more characters</div>
           <div className="textb">
             <input type="text" name="username" autoComplete="off" spellCheck="false"
               value={this.state.username} onChange={this.handleChange} required />

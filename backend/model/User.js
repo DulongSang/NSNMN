@@ -103,7 +103,7 @@ async function updateByUsername(username, updateInfo) {
 }
 
 async function getAvatarByUsername(username) {
-    const user = await User.getUserByUsername(username);
+    const user = await getUserByUsername(username);
     if (user.err) {
         return { err: user.err };
     }

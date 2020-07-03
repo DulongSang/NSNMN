@@ -3,4 +3,48 @@ h1.main-title {
     background-color: #000;
     color: #fff;
     text-align: center;
+    padding: 10px;
+}
+
+h1.brand {
+    text-align: center;
+    font-size: 36px;
+    margin: 20px;
+}
+
+h1.brand img {
+    width: 60px;
+    height: 60px;
+    margin-right: 20px;
+}
+
+div.main-page-container a {
+    flex: 1;
+}
+
+div.main-block {
+    text-align: center;
+    vertical-align: middle;
+    padding: 30vh 0;
+    font-size: 52px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition-duration: 0.5s;
+}
+
+div.main-signup {
+    background-color: #94afe8;
+}
+
+div.main-login {
+    background-color: #ff7f9d;
+}
+
+div.main-signup:hover {
+    background-color: #648de4;
+}
+
+div.main-login:hover {
+    background-color: #ff4e78;
 }

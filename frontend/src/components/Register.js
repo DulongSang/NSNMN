@@ -69,8 +69,10 @@ export default class Login extends Component {
     return (
       <div className="login-container">
         <form className="login-form">
-          <img src={logo} alt="unicorn" width="60px" height="60px" />
-          <h1>NSNMN Login</h1>
+          <a href="/">
+            <img src={logo} alt="unicorn" width="60px" height="60px" />
+            <h1>NSNMN Login</h1>
+          </a>
 
           <div className="hint">You can only use letters & numbers</div>
           <div className="textb">

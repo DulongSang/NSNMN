@@ -1,17 +1,36 @@
-User documentation
+User Route
 endpoint: /api/user
+
+User: {
+    username: string,
+    name: string,
+    avatar: string (url of the avatar),
+    credit: number
+}
 
 Requests:
 
-* Authentication
+* Authentication/Login
 POST /api/user/auth
-request: { username, password, remember}
+request: [
+    {
+        Content-Type: application/json,
+        body: {
+            username: string,
+            password: string
+        }
+    },
+    {
+        Authorization: token
+    }
+]
 responses: [
     {
         status: 200,
         contentType: json
         content: {
-            token
+            token: string,
+            user: User
         }
     },
     {
@@ -23,19 +42,62 @@ responses: [
 
 * Register
 POST /api/user/register
-request: { username, password, confirm }
+request: {
+    Content-Type: application/json,
+    body: {
+        username: string,
+        password: string,
+        confirm: string
+    }
+}
 responses: [
     {
-        status: 200,
+        status: 201,
         contentType: json
         content: {
-            token,
-            username
+            token: string,
+            user: User
         }
     },
     {
         status: 400,
         contentType: plain text
         content: error info
+    }
+]
+
+* Edit
+POST /api/user/edit
+request: {
+    Content-Type: application/json,
+    Authorization: token
+    body: {
+        name?: string
+    }
+}
+response: [
+    {
+        status: 200
+    },
+    {
+        status: 401,
+        contentType: plain text
+        content: token verification error
+    }
+]
+
+* User info
+GET /api/user/:username
+request: null
+response: [
+    {
+        status: 200,
+        contentType: json,
+        content: User
+    },
+    {
+        status: 404,
+        contentType: plain text
+        content: user not found
     }
 ]

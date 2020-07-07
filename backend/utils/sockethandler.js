@@ -1,6 +1,7 @@
 const moment = require("moment");
 const User = require("../model/User");
 const { verifyToken } = require("./jwtUtils");
+const config = require("../config.json");
 
 let msgId = 0;
 
@@ -46,7 +47,7 @@ function setEvent(io) {
                 type: "text",
                 name: name,
                 role: "member",
-                avatar: avatar,
+                avatar: `${config.main.url}/src/avatars/${avatar}`,
                 time: moment().format("MM-DD HH:mm"),
                 text: msgText
             });

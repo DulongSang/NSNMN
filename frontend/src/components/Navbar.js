@@ -9,7 +9,7 @@ function Navbar() {
     return (
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
         <div className="container-fluid">
-          <a className="navbar-brand" href="/home">
+          <a className="navbar-brand" href="/app/chat">
             <img src={logo} alt="logo" width="30" height="30"></img>
             &nbsp;NSNMN
           </a>

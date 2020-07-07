@@ -3,7 +3,7 @@
         "url": "mongodb+srv://master:123695@nsnmndb-piihv.mongodb.net/nsnmn?retryWrites=true&w=majority"
     },
     "main": {
-        "url": "http://mastertime.ddns.net",
+        "url": "http://174.3.233.54:81",
         "PORT": 5000
     },
     "auth": {

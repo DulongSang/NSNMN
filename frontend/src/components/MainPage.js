@@ -6,7 +6,7 @@ function MainPage() {
         <div>
             <h1 className="main-title">Black Lives Matter!</h1>
             <h1 className="brand">
-                <img src={logo} alter="logo" />
+                <img src={logo} alt="logo" />
                 NSNMN
             </h1>
             <div className="flex main-page-container">

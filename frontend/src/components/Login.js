@@ -1,19 +1,23 @@
 import React, { Component } from 'react';
-import { Redirect } from "react-router-dom";
 import { EyeSlash, Eye, ExclamationCircleFill } from "react-bootstrap-icons";
-import logo from "../images/unicorn.png";
-import config from "../config.json";
+import { connect } from "react-redux";
 
-export default class Login extends Component {
+import logo from "../images/unicorn.png";
+import request from "../utils/httpRequest";
+import { updateUser } from "../redux/actions";
+
+class Login extends Component {
   constructor(props) {
     super(props);
+
+    this.autoLogin();
+
     this.state = {
       showPwd: false,
       username: "",
       password: "",
       remember: true,
-      errorInfo: null,
-      redirect: false
+      errorInfo: null
     };
 
     this.showHidePassword = this.showHidePassword.bind(this);
@@ -21,29 +25,26 @@ export default class Login extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  // auto login if token exists and is valid
-  componentDidMount() {
-    const token = localStorage.getItem("token");
-    if (token === null) return;
+  // auto login if token is valid
+  autoLogin() {
+    if (this.props.token === null) return;
 
-    const http = new XMLHttpRequest();
-    const url = config.hostOrigin + "/api/user/auth";
-    http.open("POST", url, true);
-    http.setRequestHeader("Authorization", token);
+    const header = { Authorization: this.props.token };
+    request("/api/user/auth", "POST", { header }, response => {
+      if (response.status === 200) {
+        const { user } = JSON.parse(response.text);
 
-    http.onreadystatechange = () => {
-      // state 4: done
-      if (http.readyState !== 4) {
-        return;
-      }
+        // update store
+        store.dispatch({
+          type: "UPDATE",
+          payload: { user }
+        });
 
-      if (http.status === 200) {
-        this.setState({ redirect: true });  // redirect
+        window.location.replace("/app");  // redirect
       } else {
-        console.log(http.responseText);
+        console.log(response.text);
       }
-    };
-    http.send();
+    });
   }
 
   showHidePassword() {
@@ -63,39 +64,31 @@ export default class Login extends Component {
     event.preventDefault();
     const loginInfo = { 
       username: this.state.username,
-      password: this.state.password,
-      remember: this.state.remember
+      password: this.state.password
     };
 
-    const http = new XMLHttpRequest();
-    const url = config.hostOrigin + "/api/user/auth";
-    http.open("POST", url, true);
-    http.setRequestHeader("Content-Type", "application/json");
+    const options = {
+      header: { "Content-Type": "application/json" },
+      body: JSON.stringify(loginInfo)
+    };
+    request("/api/user/auth", "POST", options, response => {
+      if (response.status === 200) {
+        const { token, user } = JSON.parse(response.text);
 
-    http.onreadystatechange = () => {
-      // state 4: done
-      if (http.readyState !== 4) {
-        return;
-      }
+        // update store
+        this.props.updateUser({ token, user });
 
-      // !TODO: handle response and redirect
-      if (http.status === 200) {
-        const { token, username } = JSON.parse(http.responseText);
-        localStorage.setItem("token", token);
-        localStorage.setItem("username", username);
-        this.setState({ redirect: true });  // redirect
+        // store token if user selects "remember me"
+        if (this.state.remember) {
+          localStorage.setItem("token", token);
+        }
       } else {
-        this.setState({ errorInfo: http.responseText });
+        this.setState({ errorInfo: response.text });
       }
-    };
-    http.send(JSON.stringify(loginInfo));
+    });
   }
 
   render() {
-    if (this.state.redirect) {
-      return <Redirect to="/app/chat" />; // redirect to chat page
-    }
-
     return (
       <div className="login-container">
         <form className="login-form">
@@ -139,3 +132,15 @@ export default class Login extends Component {
     );
   }
 }
+
+const mapStateToProps = state => ({
+  token: state.token
+});
+
+const mapDispatchToProps = { updateUser };
+
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Login);

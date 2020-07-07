@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
+const { getAvatarURL } = require("../utils/url");
+
 const UserSchema = new mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
     username: {
@@ -81,6 +83,18 @@ async function getUserByUsername(username) {
     }
 }
 
+// call before send the user doc to user
+function adaptUserInfo(docs) {
+    const adapted = {
+        username: docs.username,
+        name: docs.name,
+        avatar: getAvatarURL(docs.avatar),
+        credit: docs.credit
+    };
+
+    return adapted;
+}
+
 async function validatePassword(username, password) {
     const user = await getUserByUsername(username);
     if (user.err) {
@@ -118,7 +132,7 @@ module.exports = {
     createUser,
     getUserById,
     getUserByUsername,
-    getAvatarByUsername,
+    adaptUserInfo,
     validatePassword,
     updateByUsername
 };

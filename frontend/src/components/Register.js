@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
-import { Redirect } from "react-router-dom";
 import { EyeSlash, Eye, ExclamationCircleFill } from "react-bootstrap-icons";
+import { connect } from "react-redux";
+
 import logo from "../images/unicorn.png";
-import config from "../config.json";
+import request from "../utils/httpRequest";
+import { updateUser } from "../redux/actions";
 
 
-export default class Login extends Component {
+class Register extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -32,45 +34,39 @@ export default class Login extends Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    const loginInfo = { 
+    const info = { 
       username: this.state.username,
       password: this.state.password,
       confirm: this.state.confirm
     };
 
-    const http = new XMLHttpRequest();
-    const url = config.hostOrigin + "/api/user/register";
-    http.open("POST", url, true);
-    http.setRequestHeader("Content-Type", "application/json");
-
-    http.onreadystatechange = () => {
-      // state 4: done
-      if (http.readyState !== 4) {
-        return;
-      }
-
-      if (http.status === 200) {
-        const { token, username } = JSON.parse(http.responseText);
-        localStorage.setItem("token", token);
-        localStorage.setItem("username", username);
-        this.setState({ redirect: true });  // redirect
-      } else {
-        this.setState({ errorInfo: http.responseText });
-      }
+    const requestOptions = {
+      header: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(info)
     };
-    http.send(JSON.stringify(loginInfo));
+    request("/api/user/register", "POST", requestOptions, response => {
+      if (response.status === 201) {
+        const { token, user } = JSON.parse(response.text);
+        // update store
+        this.props.updateUser({ token, user });
+
+        this.props.history.push("/app");  // redirect to /app
+      } else {
+        this.setState({ errorInfo: response.text });
+      }
+    });
   }
 
   render() {
-    if (this.state.redirect) {
-      return <Redirect to="/app/chat" />; // redirect to chat page
-    }
-
     return (
       <div className="login-container">
         <form className="login-form">
-          <img src={logo} alt="unicorn" width="60px" height="60px" />
-          <h1>NSNMN Login</h1>
+          <a href="/">
+            <img src={logo} alt="unicorn" width="60px" height="60px" />
+            <h1>Create your NSNMN account</h1>
+          </a>
 
           <div className="hint">You can only use letters & numbers</div>
           <div className="textb">
@@ -110,3 +106,7 @@ export default class Login extends Component {
     );
   }
 }
+
+const mapDispatchToProps = { updateUser };
+
+export default connect(null, mapDispatchToProps)(Register);

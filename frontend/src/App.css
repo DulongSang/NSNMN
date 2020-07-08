@@ -1,3 +1,11 @@
+* {
+    font-family: "Ubuntu", sans-serif;
+}
+
+a {
+    text-decoration: none !important;
+}
+
 nav::after {
     content: "";
     position: absolute;
@@ -128,4 +136,31 @@ div.msg-user-action span {
     color: #fff;
     padding: 6px;
     border-radius: 6px;
+}
+
+#profile-page {
+    margin: 20px;
+}
+
+#profile-page label {
+    font-size: 20px;
+}
+
+#profile-page input[type=text] {
+    font-size: 18px;
+    padding: 10px;
+}
+
+#profile-page input[type=file] {
+    padding: 10px;
+    border-style: solid;
+    border-width: 2px;
+    border-color: #dddce0;
+    font-size: 16px;
+}
+
+#profile-page span.hint {
+    font-size: 16px;
+    color: #9d9d9d;
+    padding-left: 10px;
 }

@@ -15,19 +15,19 @@ router.post("/register", async (req, res) => {
     // invalid username / password
     const err = validateUser(userInfo);
     if (err) {
-        return res.status(201).send(err);
+        return res.status(400).send(err);
     }
 
     const user = await User.createUser(userInfo);
 
     if (user.err) {
         console.log(user.err);
-        return res.status(201).send(user.err);
+        return res.status(500).send(user.err);
     }
 
-    const username = userInfo.username;
+    const username = user.docs.username;
     const token = generateToken(username, "1d");
-    return res.status(200).json({ token, username });
+    return res.status(201).json({ token, user: User.adaptUserInfo(user.docs) });
 });
 
 router.post("/auth", async (req, res) => {
@@ -37,7 +37,11 @@ router.post("/auth", async (req, res) => {
         if (verification.err) { // validation error
             return res.status(401).json(verification.err);
         }
-        return res.status(200).json({ token, username: verification.username });
+        const user = await User.getUserByUsername(verification.username);
+        if (user.err) {
+            return res.status(500).send(user.err);
+        }
+        return res.status(200).json({ token, user: User.adaptUserInfo(user.docs) });
     }
 
     const username = req.body.username;
@@ -49,30 +53,42 @@ router.post("/auth", async (req, res) => {
     }
     if (validate.result) {  // correct password
         const token = generateToken(username);
-        return res.status(200).json({ token, username });
+        const user = await User.getUserByUsername(username);
+        if (user.err) {
+            return res.status(500).send(user.err);
+        }
+        return res.status(200).json({ token, user: User.adaptUserInfo(user.docs) });
     }
     return res.status(401).send("Incorrect username/password");
 });
 
-router.get("/avatar/:username", async (req, res) => {
-    const { avatar, err } = await User.getAvatarByUsername(req.params.username);
-    if (err) {
-        return res.status(400).send(err);
+router.post("/edit", async (req, res) => {
+    const token = req.get("Authorization"); // get Authorization header
+    const verification = verifyToken(token);
+    if (verification.err) {     // validation error
+        return res.status(401).json(verification.err);
     }
-    res.status(200).send(avatar);
+
+    const username = verification.username;
+    const name = req.body.name;
+
+    const user = await User.updateByUsername(username, { name });
+    if (user.err) {
+        return res.status(500).send(user.err);
+    }
+    res.status(200).send();
 });
 
-// temp api
 router.get("/:username", async (req, res) =>{
     const user = await User.getUserByUsername(req.params.username);
     if (user.err) {
         console.log(err);
-        res.status(400).send(user.err);
+        res.status(500).send(user.err);
     } else {
         if (user.docs === null) {
-            return res.status(400).send("user not found");
+            return res.status(404).send("user not found");
         }
-        res.status(200).send(user.docs);
+        res.status(200).json(User.adaptUserInfo(user.docs));
     }
 });
 

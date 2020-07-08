@@ -34,9 +34,9 @@ router.post("/avatar", avatarUpload.single("avatar"), async (req, res) => {
 
     const user = await User.updateByUsername(username, { avatar: req.filename });
     if (user.err) {
-        return res.status(500).send(err);
+        return res.status(500).send(user.err);
     }
-    res.status(200).send("Success");
+    res.status(200).send(getAvatarURL(user.docs.avatar));
 });
 
 module.exports = router;

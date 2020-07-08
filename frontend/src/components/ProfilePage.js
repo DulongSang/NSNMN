@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 
-import config from "../config.json";
+import { updateUser } from "../redux/actions";
 import request from "../utils/httpRequest";
 
 class ProfilePage extends Component {
@@ -62,28 +62,6 @@ class ProfilePage extends Component {
                 alert("Your profile has been updated");
                 window.location.replace("/app");
             });
-
-            const form = document.getElementById("profile-page");
-            const xhr = new XMLHttpRequest();
-            const url = config.hostOrigin + "/api/upload/avatar";
-            xhr.open("POST", url, true);
-            xhr.setRequestHeader("Authorization", token);
-
-            xhr.onreadystatechange = () => {
-                // state 4: done
-                if (xhr.readyState !== 4) {
-                    return;
-                }
-
-                if (xhr.status === 200) {
-                    alert("Your profile has been updated");
-                    window.location.replace("/app");
-                    localStorage.removeItem("avatar");
-                } else {
-                    alert(xhr.responseText);
-                }
-            };
-            xhr.send();
         }
     }
 

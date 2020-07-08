@@ -15,7 +15,8 @@ class Register extends Component {
       username: "",
       password: "",
       confirm: "",
-      errorInfo: null
+      errorInfo: null,
+      redirect: false
     };
 
     this.showHidePassword = this.showHidePassword.bind(this);
@@ -51,7 +52,7 @@ class Register extends Component {
         // update store
         this.props.updateUser({ token, user });
 
-        window.location.replace("/app");  // redirect
+        this.props.history.push("/app");  // redirect to /app
       } else {
         this.setState({ errorInfo: response.text });
       }
@@ -64,7 +65,7 @@ class Register extends Component {
         <form className="login-form">
           <a href="/">
             <img src={logo} alt="unicorn" width="60px" height="60px" />
-            <h1>NSNMN Login</h1>
+            <h1>Create your NSNMN account</h1>
           </a>
 
           <div className="hint">You can only use letters & numbers</div>

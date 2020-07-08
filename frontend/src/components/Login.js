@@ -23,9 +23,11 @@ class Login extends Component {
     this.showHidePassword = this.showHidePassword.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.autoLogin = this.autoLogin.bind(this);
   }
 
   // auto login if token is valid
+  // token is retrieved from localStorage if exists
   autoLogin() {
     if (this.props.token === null) return;
 
@@ -35,12 +37,9 @@ class Login extends Component {
         const { user } = JSON.parse(response.text);
 
         // update store
-        store.dispatch({
-          type: "UPDATE",
-          payload: { user }
-        });
+        this.props.updateUser({ user });
 
-        window.location.replace("/app");  // redirect
+        this.props.history.push("/app");  // redirect to /app
       } else {
         console.log(response.text);
       }
@@ -60,6 +59,7 @@ class Login extends Component {
     }
   }
 
+  // when the user click the login button
   handleSubmit(event) {
     event.preventDefault();
     const loginInfo = { 
@@ -82,6 +82,8 @@ class Login extends Component {
         if (this.state.remember) {
           localStorage.setItem("token", token);
         }
+
+        this.props.history.push("/app");  // redirect to /app
       } else {
         this.setState({ errorInfo: response.text });
       }

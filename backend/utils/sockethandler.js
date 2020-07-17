@@ -53,6 +53,16 @@ function setEvent(io) {
             });
         });
 
+        socket.on("tickle", _name => {
+            io.emit("message", {
+                id: msgId++,
+                name: name,
+                target: _name,
+                type: "userAction",
+                action: "tickle"
+            });
+        });
+
         socket.on("disconnect", () => {
             io.emit("message", {
                 id: msgId++,

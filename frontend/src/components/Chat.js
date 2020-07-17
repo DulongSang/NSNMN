@@ -31,7 +31,9 @@ export default class Chat extends Component {
 
         this.socket.on("auth", msg => {
             if(msg !== "success") {
-                // !TODO: handle token validation error
+                // handle auth fail
+                alert("Auth failed!");
+                window.location.replace("/");
             }
         });
     }
@@ -50,7 +52,7 @@ export default class Chat extends Component {
                         {this.state.msgs.map(msg => {
                             let msgComponent;
                             if (msg.type === "text") {
-                                msgComponent = <Message msg={msg}/>;
+                                msgComponent = <Message msg={msg} socket={this.socket}/>;
                             } else if (msg.type === "userAction") {
                                 msgComponent = <UserActionMsg msg={msg} />;
                             }

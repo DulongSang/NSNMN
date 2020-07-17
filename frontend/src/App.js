@@ -3,34 +3,30 @@ import './App.css';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./styles/register.css";
 import "./styles/mainPage.css";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
-import Navbar from "./components/Navbar";
-import Sidebar from "./components/Sidebar";
-import Chat from "./components/Chat";
 import Login from "./components/Login";
 import Register from "./components/Register";
-import MainPage from "./components/MainPage";
-import ProfilePage from "./components/ProfilePage";
+import PublicIndex from "./components/PublicIndex";
+import Home from "./components/Home";
 
 function App() {
+  const username = localStorage.getItem("username");
+  const isLoggedIn = username !== null;
+
   return (
     <Router>
-      <Route exact path="/" component={MainPage} />
-      <Route exact path="/login" component={Login} />
-      <Route exact path="/register" component={Register} />
-      <Route path="/app">
-        <div>
-          <Navbar />
-          <div className="flex" style={{height: "90vh"}}>
-            <Sidebar />
-            <div className="main-container">
-              <Route exact path="/app/chat" component={Chat}/>
-              <Route exact path="/app/profile" component={ProfilePage} />
-            </div>
-          </div>
-        </div>
-      </Route>
+      <Switch>
+        <Route exact path="/login">
+          <Login />
+        </Route>
+        <Route exact path="/register">
+          <Register />
+        </Route>
+        <Route path="/">
+          {isLoggedIn ? <Home /> : <PublicIndex />}
+        </Route>
+      </Switch>
     </Router>
   );
 }

@@ -34,9 +34,9 @@ class Login extends Component {
     request("/api/user/auth", "POST", { header }, response => {
       if (response.status === 200) {
         const { user } = JSON.parse(response.text);
-        localStorage.setItem("username", user.username);
 
-        window.location.replace("/app");
+        localStorage.setItem("username", user.username);
+        window.location.replace("/");
       } else {
         console.log(response.text);
       }
@@ -78,7 +78,8 @@ class Login extends Component {
         }
 
         localStorage.setItem("username", user.username);
-        window.location.replace("/app");
+        this.props.setLogin(true);
+        window.location.replace("/");
       } else {
         this.setState({ errorInfo: response.text });
       }

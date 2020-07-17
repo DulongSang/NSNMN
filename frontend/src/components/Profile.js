@@ -35,7 +35,7 @@ function Profile(props) {
             </div>
             <CaretDown style={{margin: "15px 10px", fontSize: "20px"}} />
             <div className="dropdown-content">
-                <a href="/app/profile">
+                <a href="/profile">
                     <div>
                         <Person style={{marginRight: "10px"}} />
                         Profile

@@ -7,11 +7,12 @@ class ProfilePage extends Component {
         super(props);
 
         const username = localStorage.getItem("username");
-        this.state = { username, upload: null };
+        this.state = { username, name: "", upload: null };
         request("/api/user/" + username, "GET", null, response => {
             if (response.status === 200) {
                 const user = JSON.parse(response.text);
                 this.setState({ name: user.name });
+                this.setState({ prevName: user.name });
                 this.setState({ avatar: user.avatar });
             } else {
                 alert(response.text);
@@ -39,11 +40,12 @@ class ProfilePage extends Component {
     handleSubmit(event) {
         event.preventDefault();
 
+        const token = localStorage.getItem("token");
         // check if name is changed
-        if (this.props.user.name !== this.state.name) {
+        if (this.state.prevName !== this.state.name) {
             const options = {
                 header: {
-                    "Authorization": this.props.token,
+                    "Authorization": token,
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({ name: this.state.name })
@@ -51,7 +53,6 @@ class ProfilePage extends Component {
             request("/api/user/edit", "POST", options, response => {
                 if (response.status === 200) {
                     alert("Your profile has been updated!");
-                    window.location.replace("/app");
                 } else {
                     alert(response.text);
                 }
@@ -62,18 +63,19 @@ class ProfilePage extends Component {
         if (this.state.upload) {
             const form = document.getElementById("profile-page");
             const options = {
-                header: { "Authorization": this.props.token },
+                header: { "Authorization": token },
                 body: new FormData(form)
             };
             request("/api/upload/avatar", "POST", options, response => {
                 if (response.status === 200) {
                     alert("Your profile has been updated");
-                    window.location.replace("/app");
                 } else {
                     alert(response.text);
                 }
             });
         }
+
+        window.location.replace("/");
     }
 
     render() {

@@ -1,7 +1,7 @@
 import React from 'react';
 import logo from "../images/unicorn.png";
 
-function MainPage() {
+function PublicIndex() {
     return (
         <div>
             <h1 className="main-title">Black Lives Matter!</h1>
@@ -22,4 +22,4 @@ function MainPage() {
 }
 
 
-export default MainPage;
+export default PublicIndex;

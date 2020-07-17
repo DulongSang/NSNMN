@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import { EyeSlash, Eye, ExclamationCircleFill } from "react-bootstrap-icons";
-import { connect } from "react-redux";
 
 import logo from "../images/unicorn.png";
 import request from "../utils/httpRequest";
-import { updateUser } from "../redux/actions";
 
 class Login extends Component {
   constructor(props) {
@@ -29,17 +27,16 @@ class Login extends Component {
   // auto login if token is valid
   // token is retrieved from localStorage if exists
   autoLogin() {
-    if (this.props.token === null) return;
+    const token = localStorage.getItem("token");
+    if (token === null) return;
 
-    const header = { Authorization: this.props.token };
+    const header = { Authorization: token };
     request("/api/user/auth", "POST", { header }, response => {
       if (response.status === 200) {
         const { user } = JSON.parse(response.text);
+        localStorage.setItem("username", user.username);
 
-        // update store
-        this.props.updateUser({ user });
-
-        this.props.history.push("/app");  // redirect to /app
+        window.location.replace("/app");
       } else {
         console.log(response.text);
       }
@@ -74,16 +71,14 @@ class Login extends Component {
     request("/api/user/auth", "POST", options, response => {
       if (response.status === 200) {
         const { token, user } = JSON.parse(response.text);
-
-        // update store
-        this.props.updateUser({ token, user });
-
+        
         // store token if user selects "remember me"
         if (this.state.remember) {
           localStorage.setItem("token", token);
         }
 
-        this.props.history.push("/app");  // redirect to /app
+        localStorage.setItem("username", user.username);
+        window.location.replace("/app");
       } else {
         this.setState({ errorInfo: response.text });
       }
@@ -135,14 +130,4 @@ class Login extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  token: state.token
-});
-
-const mapDispatchToProps = { updateUser };
-
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Login);
+export default Login;

@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import { EyeSlash, Eye, ExclamationCircleFill } from "react-bootstrap-icons";
-import { connect } from "react-redux";
 
 import logo from "../images/unicorn.png";
 import request from "../utils/httpRequest";
-import { updateUser } from "../redux/actions";
 
 
 class Register extends Component {
@@ -49,8 +47,9 @@ class Register extends Component {
     request("/api/user/register", "POST", requestOptions, response => {
       if (response.status === 201) {
         const { token, user } = JSON.parse(response.text);
-        // update store
-        this.props.updateUser({ token, user });
+        
+        localStorage.setItem("token", token);
+        localStorage.setItem("username", user.username);
 
         this.props.history.push("/app");  // redirect to /app
       } else {
@@ -107,6 +106,4 @@ class Register extends Component {
   }
 }
 
-const mapDispatchToProps = { updateUser };
-
-export default connect(null, mapDispatchToProps)(Register);
+export default Register;

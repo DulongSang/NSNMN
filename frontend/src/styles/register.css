@@ -117,3 +117,11 @@ form.login-form div a {
     color: #257fe6;
     transition-duration: 0.5s;
 }
+
+
+img.edit-avatar {
+    height: 120px;
+    width: 120px;
+    border-radius: 10px;
+    margin: 10px 0;
+}

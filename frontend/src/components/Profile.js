@@ -1,57 +1,55 @@
-import React, { Component } from 'react';
-import { CaretDown, BoxArrowInRight } from "react-bootstrap-icons";
-import { connect } from "react-redux";
-import { Redirect } from "react-router-dom";
+import React, { useState } from 'react';
+import { CaretDown, BoxArrowInRight, Person } from "react-bootstrap-icons";
 
-import { updateUser } from "../redux/actions";
+import request from "../utils/httpRequest";
 
-class Profile extends Component {
-    constructor(props) {
-        super(props);
+function Profile(props) {
+    const username = localStorage.getItem("username");
 
-        this.state = { redirect: false };
+    const [name, setName] = useState("default");
+    const [avatar, setAvatar] = useState("default");
+    const [credit, setCredit] = useState(0);
 
-        this.logout = this.logout.bind(this);
-    }
-
-    logout() {
-        // clear localStorage
-        localStorage.removeItem("token");
-    }
-
-    render() {
-        if (this.state.redirect) {
-            return <Redirect to="/app/profile" />;
+    request("/api/user/" + username, "GET", null, response => {
+        if (response.status === 200) {
+            const user = JSON.parse(response.text);
+            setName(user.name);
+            setAvatar(user.avatar);
+            setCredit(user.credit);
+        } else {
+            console.log(response.text);
         }
+    });
 
-        const { username, name, avatar } = this.props.user;
-        return (
-            <div className="profile flex">
-                <img src={avatar} className="avatar" alt="avatar" />
-                <div>
-                    <span style={{fontSize: "18px", color: "blue"}}>{username}</span><br />
-                    <span>{name}</span>
-                </div>
-                <CaretDown style={{margin: "15px 10px", fontSize: "20px"}} />
-                <div className="dropdown-content">
-                    <div onClick={() => this.setState({ redirect: true })}>Profile</div>
-                    <div>
-                        <a href="/" onClick={this.logout}>Log out</a>
-                        <BoxArrowInRight style={{marginLeft: "10px"}}/>
-                    </div>
-                </div>
+    const logout = () => {
+        // clear localStorage
+        localStorage.clear();
+    };
+
+    return (
+        <div className="profile flex">
+            <img src={avatar} className="avatar" alt="avatar" />
+            <div>
+                <span style={{fontSize: "18px", color: "blue"}}>{name}</span><br />
+                <span>Credit: {credit}</span>
             </div>
-        );
-    }
+            <CaretDown style={{margin: "15px 10px", fontSize: "20px"}} />
+            <div className="dropdown-content">
+                <a href="/app/profile">
+                    <div>
+                        <Person style={{marginRight: "10px"}} />
+                        Profile
+                    </div>
+                </a>
+                <a href="/" onClick={logout}>
+                    <div>
+                        <BoxArrowInRight style={{marginRight: "10px"}}/>
+                        Log out
+                    </div>
+                </a>
+            </div>
+        </div>
+    );
 }
 
-const mapStateToProps = state => ({
-    user: state.user
-});
-
-const mapDispatchToProps = { updateUser };
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(Profile);
+export default Profile;

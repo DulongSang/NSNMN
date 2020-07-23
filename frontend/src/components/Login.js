@@ -78,7 +78,6 @@ class Login extends Component {
         }
 
         localStorage.setItem("username", user.username);
-        this.props.setLogin(true);
         window.location.replace("/");
       } else {
         this.setState({ errorInfo: response.text });

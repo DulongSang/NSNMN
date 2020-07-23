@@ -50,7 +50,7 @@ class Register extends Component {
         
         localStorage.setItem("token", token);
         localStorage.setItem("username", user.username);
-        this.props.history.push("/");  // redirect to /app
+        window.location.replace("/");
       } else {
         this.setState({ errorInfo: response.text });
       }

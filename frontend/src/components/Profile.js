@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CaretDown, BoxArrowInRight, Person } from "react-bootstrap-icons";
 
 import request from "../utils/httpRequest";
@@ -10,17 +10,19 @@ function Profile(props) {
     const [avatar, setAvatar] = useState("default");
     const [credit, setCredit] = useState(0);
 
-    request("/api/user/" + username, "GET", null, response => {
-        if (response.status === 200) {
-            const user = JSON.parse(response.text);
-            setName(user.name);
-            setAvatar(user.avatar);
-            setCredit(user.credit);
-        } else {
-            console.log(response.text);
-        }
-    });
-
+    useEffect(() => {
+        request("/api/user/" + username, "GET", null, response => {
+            if (response.status === 200) {
+                const user = JSON.parse(response.text);
+                setName(user.name);
+                setAvatar(user.avatar);
+                setCredit(user.credit);
+            } else {
+                console.log(response.text);
+            }
+        });
+    }, [username]);
+    
     const logout = () => {
         // clear localStorage
         localStorage.clear();

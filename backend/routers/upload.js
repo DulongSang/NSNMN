@@ -5,6 +5,7 @@ const multer = require("multer");
 
 const { verifyToken } = require("../utils/jwtUtils");
 const User = require("../model/User");
+const { getAvatarURL } = require("../utils/url");
 
 
 const avatarStorage = multer.diskStorage({
@@ -16,7 +17,7 @@ const avatarStorage = multer.diskStorage({
         req.filename = filename;
         callback(null, filename);
     }
-})
+});
 
 const avatarUpload = multer({ storage: avatarStorage });
 router.post("/avatar", avatarUpload.single("avatar"), async (req, res) => {

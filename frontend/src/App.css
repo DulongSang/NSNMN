@@ -164,3 +164,9 @@ div.msg-user-action span {
     color: #9d9d9d;
     padding-left: 10px;
 }
+
+.noselect {
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    user-select: none; /* supported by Chrome, Edge, Opera and Firefox */
+}

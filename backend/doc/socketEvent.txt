@@ -1,8 +1,37 @@
-socket send:
-    message
-    join
+Chat:
 
-io send:
+socket emit:
+    join,
     message
-    userAction
+
+io emit:
+    message,
+    userAction,
     systemMsg
+
+
+NHNMN:
+
+socket emit:
+    join,
+    mouseDown,  // emit when mouse down
+    mousePos,
+    color,
+    size,
+    fill,
+    mode,
+    fill,
+    clear,
+    gameMsg
+
+io emit:
+    userList,
+    round,
+    time,
+    join,
+    mouseDown,
+    mousePos,
+    color,
+    size,
+    gameMsg,
+    hint

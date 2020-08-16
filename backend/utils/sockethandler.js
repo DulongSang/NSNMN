@@ -53,15 +53,17 @@ function setEvent(io) {
             });
         });
 
-        socket.on("tickle", _name => {
+        socket.on("tickle", targetName => {
             io.emit("message", {
                 id: msgId++,
                 name: name,
-                target: _name,
+                target: targetName,
                 type: "userAction",
                 action: "tickle"
             });
         });
+
+        NHNMN_handler(io, socket);
 
         socket.on("disconnect", () => {
             io.emit("message", {
@@ -73,6 +75,37 @@ function setEvent(io) {
 
             console.log(`${username} disconnected`);
         });
+    });
+}
+
+
+function NHNMN_handler(io, socket) {
+    socket.on("mouseDown", pos => {
+        io.emit("mouseDown", pos);
+    });
+
+    socket.on("mousePos", pos => {
+        io.emit("mousePos", pos);
+    });
+
+    socket.on("color", color => {
+        io.emit("color", color);
+    });
+
+    socket.on("size", size => {
+        io.emit("size", size);
+    });
+
+    socket.on("clear", () => {
+        io.emit("clear");
+    });
+
+    socket.on("mode", mode => {
+        io.emit("mode", mode);
+    });
+
+    socket.on("fill", () => {
+        io.emit("fill");
     });
 }
 

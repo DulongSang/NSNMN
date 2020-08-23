@@ -293,8 +293,8 @@ function nhnmn_nextRound(io) {
 }
 
 function nhnmn_isRoundOver() {
-    for (let i = 0; i < nhnmnSession.users; i++) {
-        if (nhnmnSession.users[i] === 0) {
+    for (let i = 0; i < nhnmnSession.users.length; i++) {
+        if (nhnmnSession.users[i].status === 0) {
             return false;
         }
     }

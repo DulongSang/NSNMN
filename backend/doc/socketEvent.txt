@@ -22,11 +22,13 @@ socket emit:
     mode,
     fill,
     clear,
-    gameMsg
+    gameMsg,
+    wordChose
 
 io emit:
     userList,
     round,
+    totalRounds,
     time,
     join,
     mouseDown,
@@ -34,4 +36,5 @@ io emit:
     color,
     size,
     gameMsg,
-    hint
+    hint,
+    choices

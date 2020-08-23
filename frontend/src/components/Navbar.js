@@ -26,6 +26,11 @@ function Navbar(props) {
                 Chat
               </NavLink>
             </li>
+            <li>
+              <NavLink className="nav-link" activeClassName="active" to="/app/nhnmn">
+                NHNMN
+              </NavLink>
+            </li>
           </ul>
           <Profile />
         </div>

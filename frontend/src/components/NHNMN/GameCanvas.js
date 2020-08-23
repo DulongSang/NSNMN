@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import ChooseWord from "./ChooseWord";
 
 let x, y;
 let socket;
@@ -18,7 +19,7 @@ function handleMouseMove(event) {
 }
 
 
-function setSocketEventHandler(socket) {
+function setSocketEventHandler(setChoices) {
     const canvas = document.getElementById("game-canvas");
     const ctx = canvas.getContext("2d");
 
@@ -89,7 +90,6 @@ function setSocketEventHandler(socket) {
         ctx.fillRect(0, 0, canvas.width, canvas.height);
     });
 
-
     // change mode
     socket.on("mode", mode => {
         const selectedColor = "#0dbc79";
@@ -122,23 +122,40 @@ function setSocketEventHandler(socket) {
                 break;
         }
     });
+
+    socket.on("choices", choices => setChoices(choices));
 }
 
 function GameCanvas(props) {
+    const [choices, setChoices] = useState(null);
+
     useEffect(() => {
-        setSocketEventHandler(props.socket);
         socket = props.socket;
+        setSocketEventHandler(setChoices);
     }, [props.socket]);
 
-
-    const style = {
-        border: "1px solid #808080"
+    const chooseWord = (word) => {
+        socket.emit("wordChose", word);
+        setChoices(null);
     };
 
+    const style = {
+        border: "1px solid #808080",
+        zIndex: 1
+    };
+
+    const width = "820px";
+    const height = "500px";
+
     return (
-        <canvas id="game-canvas" width="820px" height="500px" style={style}
-            onMouseMove={handleMouseMove}
-            onMouseDown={handleMouseDown} />
+        <div style={{ position: "relative" }}>
+            <canvas id="game-canvas" width={width} height={height} style={style}
+                onMouseMove={handleMouseMove}
+                onMouseDown={handleMouseDown} />
+            {choices && // if choices != null, render ChooseWord
+                <ChooseWord height={height} width={width} choices={choices} chooseWord={chooseWord} />
+            }
+        </div>
     );
 }
 

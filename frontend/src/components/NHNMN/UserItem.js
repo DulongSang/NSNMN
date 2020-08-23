@@ -8,7 +8,7 @@ function UserItem(props) {
     return (
         <li className="game-user-item">
             <div className="flex">
-                <img src={avatar} alt="avatar" style={{ flex: 1 }} />
+                <img src={avatar} alt="avatar" style={{ flex: 1, flexGrow: 0 }} />
                 <div style={{ flex: 2 }} >
                     <span className="game-user-name">{name}</span><br />
                     <span className="game-user-point">Point: {point}</span>
@@ -24,9 +24,9 @@ function UserItem(props) {
 
 function renderStatusIcon(status) {
     switch(status) {
-        case 1:
+        case 1:     // user guessed
             return <Check2Circle style={{ fontSize: "40px", color: "#056d3b", margin: "10px" }} />;
-        case 2:
+        case 2:     // user is drawing now
             return <Brush style={{ fontSize: "40px", color: "black", margin: "10px" }} />;
         default:
             return <div style={{ display: "inline-block", width: "60px" }}/>;   // need to be fixed!

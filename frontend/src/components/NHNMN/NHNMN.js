@@ -10,7 +10,9 @@ import GameChat from "./GameChat";
 
 function NHNMN(props) {
     const socket = io(hostOrigin);
-    console.log("socket connected.");
+
+    const token = localStorage.getItem("token");
+    socket.emit("game-join", token);
 
     // close the socket when componenet unmounts
     useEffect(() => {

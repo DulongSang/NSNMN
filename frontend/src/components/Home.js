@@ -19,7 +19,7 @@ function Home() {
                         <Chat />
                     </div>
                 </Route>
-                <Route exact path="/app/game">
+                <Route exact path="/app/nhnmn">
                     <NHNMN />
                 </Route>
             </div>

@@ -26,6 +26,7 @@ export default class Chat extends Component {
 
         this.socket.on("message", msg => {
             this.setState(prevState => ({ msgs: [...prevState.msgs, msg] }));
+
             this.scrollToBottom();  // auto scroll to bottom
         });
 
@@ -36,6 +37,8 @@ export default class Chat extends Component {
                 window.location.replace("/");
             }
         });
+
+        this.forceUpdate();
     }
 
     scrollToBottom = () => {
@@ -60,7 +63,7 @@ export default class Chat extends Component {
                         })}
                     </ul>
                 </div>
-                <InputArea socket={this.socket}/>
+                <InputArea socket={this.socket} />
             </div>
         );
     }

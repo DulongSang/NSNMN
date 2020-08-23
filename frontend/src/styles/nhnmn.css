@@ -30,6 +30,7 @@ div.nhnmn-hint {
     text-align: center;
     flex-grow: 1;
     padding: 10px 0;
+    letter-spacing: 6px;
 }
 
 
@@ -46,8 +47,8 @@ li.game-user-item:nth-child(odd) > div {
 }
 
 li.game-user-item img {
-    width: 50px;
-    height: 50px;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
     margin: 6px;
 }
@@ -139,4 +140,33 @@ div#nhnmn-colors > div > div {
 
 div#nhnmn-colors > div > div:hover {
     border: 2px solid #666;
+}
+
+#over-canvas {
+    position: absolute;
+    z-index: 2;
+    background-color: rgba(99, 99, 99, 0.7);
+    top: 0;
+}
+
+div.choice-container {
+    display: flex;
+    margin: 200px 0;
+}
+
+div.choice-container div {
+    background-color: #fff;
+    font-size: 24px;
+    color: #000;
+    margin: 20px;
+    padding: 6px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition-duration: 0.5s;
+    flex: 1;
+    text-align: center;
+}
+
+div.choice-container div:hover {
+    background-color: rgb(188, 255, 241);
 }

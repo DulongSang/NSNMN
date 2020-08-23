@@ -16,12 +16,14 @@ class InputArea extends Component {
     }
 
     handleSend() {
-        this.props.socket.emit("message", this.state.text);
-        this.setState({ text: "" });
+        if (this.state.text.length > 0) {
+            this.props.socket.emit("message", this.state.text);
+            this.setState({ text: "" });
+        }
     }
 
     handleKeyDown(event) {
-        if (event.keyCode === 13) { // hit enter
+        if (event.keyCode === 13) {     // press [Enter]
             if (!event.shiftKey) {
                 event.preventDefault(); // prevent new line
                 this.handleSend();

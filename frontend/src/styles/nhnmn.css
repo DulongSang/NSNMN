@@ -69,8 +69,8 @@ div.game-container canvas {
     border: 1px solid #808080;
 }
 
-div.game-msg-container {
-    flex-grow: 1;
+ul#game-msg-container > li {
+    list-style: none;
 }
 
 div.game-chat input {

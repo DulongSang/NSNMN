@@ -14,14 +14,14 @@ function generateHint(word) {
 
 /*
  * Replace the chars at the particular index in original with replace
- * e.g. replaceAt("apple", "c", 2) => "apcle"
+ * e.g. strReplaceAt("apple", "c", 2) => "apcle"
  */
-function replaceAt(original, replace, index) {
+function strReplaceAt(original, replace, index) {
     return original.substr(0, index) + replace + original.substr(index + replace.length);
 }
 
 
 module.exports = {
     generateHint,
-    replaceAt
+    strReplaceAt
 };

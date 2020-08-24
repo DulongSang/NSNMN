@@ -14,14 +14,15 @@ NHNMN:
 
 socket emit:
     join,
-    mouseDown,  // emit when mouse down
-    mousePos,
-    color,
-    size,
-    fill,
-    mode,
-    fill,
-    clear,
+    nhnmn-op: [
+        mouseDown: pos,
+        mousePos: pos,
+        color: color,
+        size: brush-radius,
+        mode: ["brush", "eraser"],
+        fill,
+        clear,
+    ],
     gameMsg,
     wordChose
 
@@ -31,10 +32,15 @@ io emit:
     totalRounds,
     time,
     join,
-    mouseDown,
-    mousePos,
-    color,
-    size,
+    nhnmn-op: [
+        mouseDown: pos,
+        mousePos: pos,
+        color: color,
+        size: brush-radius,
+        mode: ["brush", "eraser"],
+        fill,
+        clear,
+    ],
     gameMsg,
     hint,
     choices

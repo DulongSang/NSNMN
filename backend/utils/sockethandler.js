@@ -2,7 +2,7 @@ const moment = require("moment");
 const User = require("../model/User");
 const { verifyToken } = require("./jwtUtils");
 const config = require("../config.json");
-const { generateHint, replaceAt } = require("./stringManipulations");
+const { generateHint, strReplaceAt } = require("./stringManipulations");
 const { words } = require("../nhnmn/words.json");
 
 let msgId = 0;
@@ -13,11 +13,13 @@ const nhnmnSession = {
     word: null,
     hint: null,
     users: [],
-    painter: 0,
+    painterIndex: 0,
+    painterUsername: null,
     time: 90,
     round: 0,
     n_rounds: 3,
-    roundTimerId: 0
+    roundTimerId: -1,
+    hintTimerId: -1
 };
 
 
@@ -137,81 +139,50 @@ function setEvent(io) {
     
     
             // set socket event handlers
-            socket.on("mouseDown", pos => {
-                io.to("nhnmn").emit("mouseDown", pos);
-            });
-        
-            socket.on("mousePos", pos => {
-                io.to("nhnmn").emit("mousePos", pos);
-            });
-        
-            socket.on("color", color => {
-                io.to("nhnmn").emit("color", color);
-            });
-        
-            socket.on("size", size => {
-                io.to("nhnmn").emit("size", size);
-            });
-        
-            socket.on("clear", () => {
-                io.to("nhnmn").emit("clear");
-            });
-        
-            socket.on("mode", mode => {
-                io.to("nhnmn").emit("mode", mode);
-            });
-        
-            socket.on("fill", () => {
-                io.emit("fill");
+
+            // op: { type, payload }
+            socket.on("nhnmn-op", op => {
+                if (username === nhnmnSession.painterUsername) {
+                    io.to("nhnmn").emit("nhnmn-op", op);
+                }
             });
         
             // when user chooces a word to draw
             socket.on("wordChose", word => {
                 nhnmnSession.word = word;
                 nhnmnSession.hint = generateHint(word);
-
-                io.to("nhnmn").emit("time", nhnmnSession.time);   // reset all users' timer
-                socket.broadcast.to("nhnmn").emit("hint", nhnmnSession.hint);
-                socket.emit("hint", word);
-                io.to("nhnmn").emit("clear");
-
-                const msg = {
-                    name,
-                    type: 2,
-                    id: msgId++
-                };
-                io.to("nhnmn").emit("gameMsg", msg)
-
-                clearInterval(nhnmnSession.roundTimerId);
-                nhnmnSession.roundTimerId = setInterval(() => {
-                    nhnmn_nextRound(io);
-                }, nhnmnSession.time * 1000);
+                nhnmn_roundStart(io);
             });
         
             socket.on("gameMsg", text => {
-                if(text === "/start") {
-                    // start a new game
-                    nhnmnSession.painter = 0;
-                    nhnmnSession.round = 1;
-
-                    io.to("nhnmn").emit("mode", "brush");
-                    io.to("nhnmn").emit("color", "#000");
-                    io.to("nhnmn").emit("size", 6);
-                    io.to("nhnmn").emit("round", nhnmnSession.round);
-                    io.to("nhnmn").emit("totalRounds", nhnmnSession.n_rounds);
-                    nhnmn_nextRound(io);
-                    return;
-                } else if (text === "/next") {
-                    nhnmn_nextRound(io);
-                    return;
-                }
-
-                        
                 /** msg type:
                  * 0: user regular message
                  * 1: user guessed the word (green)
                  * 2: user is drawing now (blue)
+                 * 3: system message
                  */
+
+                if (text[0] === "/") {
+                    switch(text.substr(1)) {
+                        case "start":
+                            nhnmn_newGame(io);
+                            return;
+                        case "next":
+                            nhnmn_nextRound(io);
+                            return;
+                        case "end":
+                            nhnmn_clearTimers();
+                            return;
+                        default:
+                            const msg = {
+                                text: `${text} is not a valid command!`,
+                                type: 3,
+                                id: msgId++
+                            };
+                            socket.emit("gameMsg", msg);
+                            return;
+                    }
+                }
                 
                 // check if the answer is correct
                 if (text === nhnmnSession.word) {
@@ -262,20 +233,40 @@ function setEvent(io) {
     });
 }
 
+function nhnmn_newGame(io) {
+    nhnmnSession.painterIndex = -1; // in nhnmn_nextRound, painterIndex += 1
+    nhnmnSession.round = 1;
+
+    io.to("nhnmn").emit("round", nhnmnSession.round);
+    io.to("nhnmn").emit("totalRounds", nhnmnSession.n_rounds);
+    nhnmn_nextRound(io);
+}
+
+
 function nhnmn_nextRound(io) {
     // stop all users' timer
     io.to("nhnmn").emit("time", -1);
 
+    // reset painter's tool
+    io.to("nhnmn").emit("nhnmn-op", { type: "mode", payload: { mode: "brush" }});
+    io.to("nhnmn").emit("nhnmn-op", { type: "color", payload: { color: "#000" }});
+    io.to("nhnmn").emit("nhnmn-op", { type: "size", payload: { size: 6 }});
+
+    // clear hint emit interval
+    clearInterval(nhnmnSession.hintTimerId);
+
     // reset all users' status
     nhnmnSession.users.forEach(user => user.status = 0);
 
-    // set painter
-    nhnmnSession.painter += 1;
-    if (nhnmnSession.painter === nhnmnSession.users.length) {
-        nhnmnSession.painter = 0;
+    // set painterIndex
+    nhnmnSession.painterIndex += 1;
+    if (nhnmnSession.painterIndex === nhnmnSession.users.length) {
+        nhnmnSession.painterIndex = 0;
         nhnmnSession.round += 1;
+        io.to("nhnmn").emit("round", nhnmnSession.round);
     }
-    nhnmnSession.users[nhnmnSession.painter].status = 2;
+    nhnmnSession.users[nhnmnSession.painterIndex].status = 2;
+    nhnmnSession.painterUsername = nhnmnSession.users[nhnmnSession.painterIndex].username;
 
     // choose 3 words
     let index1, index2, index3;
@@ -288,8 +279,33 @@ function nhnmn_nextRound(io) {
     } while (index3 === index1 || index3 === index2);
 
     const choices = [words[index1], words[index2], words[index3]];
-    io.to(nhnmnSession.users[nhnmnSession.painter].id).emit("choices", choices);
+    io.to(nhnmnSession.users[nhnmnSession.painterIndex].id).emit("choices", choices);
     io.to("nhnmn").emit("userList", nhnmnSession.users);
+}
+
+function nhnmn_roundStart(io) {
+    io.to("nhnmn").emit("time", nhnmnSession.time);   // reset all users' timer
+    io.to("nhnmn").emit("nhnmn-op", { type: "clear" }); // clear canvas
+
+    io.to("nhnmn").emit("hint", nhnmnSession.hint);
+    io.to(nhnmnSession.users[nhnmnSession.painterIndex].id).emit("hint", nhnmnSession.word);
+
+    const msg = {
+        name: nhnmnSession.users[nhnmnSession.painterIndex].name,
+        type: 2,
+        id: msgId++
+    };
+    io.to("nhnmn").emit("gameMsg", msg);
+    
+    // set round timer
+    clearTimeout(nhnmnSession.roundTimerId);
+    nhnmnSession.roundTimerId = setTimeout(() => {
+        io.to("nhnmn").emit("hint", nhnmnSession.word);
+        nhnmn_nextRound(io);
+    }, nhnmnSession.time * 1000);
+
+    // set hint emit timer
+    nhnmnSession.hintTimerId = setInterval(() => nhnmn_hint(io), 30000);
 }
 
 function nhnmn_isRoundOver() {
@@ -299,6 +315,23 @@ function nhnmn_isRoundOver() {
         }
     }
     return true;
+}
+
+function nhnmn_hint(io) {
+    let index;
+    let limitGuard = 0;
+    do {
+        index = Math.floor(Math.random() * nhnmnSession.word.length);
+        limitGuard++;
+    } while　(nhnmnSession.hint[index] !== "_" && limitGuard < 100);
+    nhnmnSession.hint = strReplaceAt(nhnmnSession.hint, nhnmnSession.word[index], index);
+    io.to("nhnmn").emit("hint", nhnmnSession.hint);
+    io.to(nhnmnSession.users[nhnmnSession.painterIndex].id).emit("hint", nhnmnSession.word);
+}
+
+function nhnmn_clearTimers() {
+    clearTimeout(nhnmnSession.roundTimerId);
+    clearInterval(nhnmnSession.hintTimerId);
 }
 
 module.exports = setEvent;

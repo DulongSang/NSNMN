@@ -7,7 +7,7 @@ import fillIcon from "../../images/fill-icon.png";
 
 function makeHandleSizeChange(socket, size) {
   return () => {
-    socket.emit("size", size);
+    socket.emit("nhnmn-op", { type: "size", payload: { size } });
   };
 }
 
@@ -18,25 +18,21 @@ function Toolbar(props) {
 
   const handleColorChange = event => {
     const color = event.target.style.backgroundColor;
-    props.socket.emit("color", color);
-
-    // change color preview
-    const colorPreview = document.getElementById("nhnmn-current-color");
-    colorPreview.style.backgroundColor = color;
+    props.socket.emit("nhnmn-op", { type: "color", payload: { color } });
   };
 
   function handleModeChange(mode) {
     return () => {
-      props.socket.emit("mode", mode);
+      props.socket.emit("nhnmn-op", { type: "mode", payload: { mode } });
     }
   };
 
   const handleClear = () => {
-    props.socket.emit("clear");
+    props.socket.emit("nhnmn-op", { type: "clear" });
   }
 
   const handleFill = () => {
-    props.socket.emit("fill");
+    props.socket.emit("nhnmn-op", { type: "fill" });
   }
 
   return (

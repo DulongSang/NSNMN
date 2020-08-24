@@ -5,36 +5,49 @@ function GameChat(props) {
 
     // set socket event handler
     useEffect(() => {
-        console.log('socket');
         props.socket.on("gameMsg", msg => {
             setMsgs(prevMsgs => [...prevMsgs, msg]);
+
+            // scroll to bottom
+            // To be optimized
+            const container = document.getElementById("game-msg-container");
+            container.scrollTop = container.scrollHeight;
         });
     }, [props.socket]);
 
+    const ulStyle = { 
+        padding: "5px 0 0 10px", 
+        flexGrow: 1,
+        overflowY: "scroll", 
+        maxHeight: "500px" 
+    };
+
     return (
         <div style={{ flex: 3, display: "flex", flexFlow: "column" }}>
-            <ul className="game-msg-container" 
-                style={{ marginTop: "10px", flex: 1, paddingLeft: "10px" }}>
+            <ul style={ulStyle} id="game-msg-container">
                 {msgs.map(msg => {
+                    let content;
                     switch(msg.type) {
                         case 0:     // user message
-                            return <Message name={msg.name} text={msg.text} key={msg.id} />;
+                            content = <Message name={msg.name} text={msg.text} />;
+                            break;
                         case 1:     // user correct guess
-                            return (
-                                <div style={{ color: "green" }} key={msg.id}>
-                                    {msg.name} guessed the word!
-                                </div>);
+                            content = (<div style={{ color: "green" }}>
+                                {msg.name} guessed the word!</div>);
+                            break;
                         case 2:     // user is drawing now
-                            return (
-                                <div style={{ color: "blue" }} key={msg.id}>
-                                    {msg.name} is drawing now.
-                                </div>);
+                            content = (<div style={{ color: "blue" }}>
+                                {msg.name} is drawing now.</div>);
+                            break;
+                        case 3:     // system warning
+                            content = (<div style={{ color: "red" }}>
+                                {msg.text}</div>);
+                            break;
                         default:
-                            return (
-                                <div style={{ color: "red" }} key={msg.id}>
-                                    Invalid message type {msg.type}
-                                </div>);
+                            content = (<div style={{ color: "red" }}>
+                                Invalid message type {msg.type}</div>);
                     }
+                    return <li key={msg.id}>{content}</li>;
                 })}
             </ul>
             <InputArea socket={props.socket} />
@@ -63,8 +76,10 @@ function InputArea(props) {
     const handleKeyDown = (event) => {
         if (event.keyCode === 13) {
             event.preventDefault();
-            props.socket.emit("gameMsg", text);
-            setText("");
+            if (text.length !== 0) {
+                props.socket.emit("gameMsg", text);
+                setText("");
+            }
         }
     };
 

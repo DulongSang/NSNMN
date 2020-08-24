@@ -33,7 +33,7 @@ export default class Chat extends Component {
         this.socket.on("auth", msg => {
             if(msg !== "success") {
                 // handle auth fail
-                alert("Auth failed!");
+                alert("Socket auth failed!");
                 window.location.replace("/");
             }
         });
